@@ -3,16 +3,17 @@
 
 
 <input type="text" name="name" id="taskName">
-<input type="button" id="addButton" name="add" value="Add"><br>
+<input type="button" id="addButton" name="add" value="Add">
+<input type="button" id="deleteAllButton" name="deleteAll" value="Delete All""><br>
 
 <ul id="tasksList">
 	#{list tasks, as:'task'}
 	
 		#{if task.done == false}
-			<li id="${task.id}"><input type="button" class="deleteButton" value="OK !"> ${task.name}</li>
+			<li id="${task.id}"><input type="checkbox"> ${task.name}</li>
 		#{/if}
 		#{else}
-			<li><strike>${task.name}</strike></li>
+			<li id="${task.id}"><input type="checkbox" checked> <strike>${task.name}</strike></li>
 		#{/else}
 		
 	#{/list}
@@ -22,24 +23,38 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+	
 	$('#addButton').click(function(event) {
 		$.post(
 			'@{Application.add}', 
 			{ name: $('#taskName').val() }, 
 			function(data) {
-				$('ul#tasksList').append('<li>' + data.name + '</li>');
+				$('ul#tasksList').append('<li id="' + data.id + '"><input type="checkbox"> ' + data.name + '</li>');
+		});
+	});
+	
+	$('#deleteAllButton').click(function(event) {
+		$.post(
+			'@{Application.deleteAll}', 
+			function(data) {
+				$('ul#tasksList').empty();
 		});
 	})
 	
-	$('.deleteButton').click(function(event) {
-		value = $(this).parent().attr("id");
-		$.post(
-			'@{Application.delete}', 
-			{ id: value }, 
-			function(data) {
-				$('li#' + value).html('<li><strike>' + data.name + '</strike></li>');
+	$('input[type="checkbox"]').live('click', function(e) {
+		checked = $(this).is(':checked');
+		$(this).removeAttr('checked');
+		$.post('@{Application.done}',
+		{ id: $(this).parent().attr('id'), done: checked }, 
+		function (data) {
+			if (checked) {
+				$('li#' + data.id).html('<li id="' + data.id + '"><input type="checkbox" checked> <strike>' + data.name + '</strike></li>');
+			} else {
+				$('li#' + data.id).html('<li id="' + data.id + '"><input type="checkbox"> ' + data.name + '</li>');
+			}
 		});
-	})
+	});
+
 });
 	
 </script>

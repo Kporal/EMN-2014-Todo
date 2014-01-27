@@ -1,7 +1,7 @@
 package controllers;
 
 import play.*;
-import play.cache.Cache;
+import play.data.validation.Required;
 import play.mvc.*;
 
 import java.util.*;
@@ -21,19 +21,27 @@ public class Application extends Controller {
 	/**
 	 * Add a new task.
 	 */
-	public static void add(String name) {
+	public static void add(@Required String name) {
 		Task task = new Task(name);
 		task.save();
 		renderJSON(task);
 	}
 	
 	/**
-	 * Remove a task.
+	 * Update a task.
 	 */
-	public static void delete(Long id) {
+	public static void done(@Required Long id, @Required boolean done) {
 		Task task = Task.findById(id);
-		task.done = true;
+		task.done = done;
 		task.save();
 		renderJSON(task);
+	}
+	
+	/**
+	 * Update a task.
+	 */
+	public static void deleteAll() {
+		int value = Task.deleteAll();
+		renderJSON(value);
 	}
 }

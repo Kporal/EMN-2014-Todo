@@ -1,28 +1,26 @@
 Todo
 ========
 
-L'objectif est de coder une application de type URL shortener en utilisant le framework Play!
+L'objectif est de coder une application de type TODO list en utilisant le framework Play!
 
 Les URLs
 ------------------------
 
-* http://localhost:9000/ : affiche la page principale de l'application. Cette page est consituée d'un formulaire simple demandant l'URL à raccourcir ainsi que d'une zone dans laquelle sera affichée l'URL raccourcie correspondante.
+* http://localhost:9000/ : affiche la page principale de l'application. Cette page est consituée d'un formulaire simple permettant de renseigner le nom d'une tâche à accomplir et du bouton pour créer la tâche ainsi que de la liste des tâches enregistrées dans la base de données. Chaque tâche possède une checkbox permettant de signaler si une tâche a été effectuée. Si c'est la cas, la tâche sera alors barrée. Un bouton permettra d'effacer les tâches faites.
 
-* http://localhost:9000/url : URL accessible en POST, permet d'ajouter une nouvelle URL raccourcie à l'application. Attention si l'url existe déjà, il faudra renvoyer l'url raccourcie correspondante
+* http://localhost:9000/tasks : URL accessible en POST, permet d'ajouter une nouvelle tâche à l'application. Cette URL sera utilisée via un appel ajax
 
-* http://localhost:9000/{id} : pattern d'url raccourcie. Redirige la requête courante vers l'url initiale représentée par l'id présent en fin d'url.
+* http://localhost:9000/tasks/{id} : URL accessible en POST, permet de mettre à jour une tâche (via un appel ajax) afin de changer son statut.
 
-* http://localhost:8080/url : affiche une vue contenant la liste de toutes les urls raccourcies en base ainsi que leur correspondance. Un lien sera mis à disposition sur chaque url pour l'effacer. Un lien pour l'effacement global sera également fournit
+* http://localhost:9000/tasks : URL accessible en delete, efface toutes les tâches faite en base
 
-* http://localhost:9000/url/delete : efface toutes les urls en base
-
-* http://localhost:9000/url/{id}/delete : efface une url donnée
+* http://localhost:9000/tasks/{id}/delete : URL accessible en delete, efface une tache donnée
 
 Composition de l'application
 ----------------------------
 
-* 2 vues sous forme de fichiers html, respectivement pour la page d'index et la page listant toutes les URLs
-* 1 entité JPA représentant les urls raccourcies. Cette entité est très simple, elle comporte simplement un champ pour l'url de départ et un id représentant la version raccourcie
+* 1 vue sous forme de fichier html
+* 1 entité JPA représentant les tâches. Cette entité est très simple, elle comporte simplement un champ pour le nom de la tâche et un boolean pour son statut, ainsi qu'un id représentant la version raccourcie (automatiquement ajouté par Play)
 * 1 contrôleur Play contenant les diverses méthodes executant la logique métier de l'application.
 
 Guide de survie
@@ -57,5 +55,3 @@ http://www.playframework.org/documentation/1.2.7/cheatsheet/model
 documentation complète : 
 
 http://www.playframework.org/documentation/1.2.7/home
-
-

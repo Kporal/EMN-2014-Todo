@@ -1,2 +1,45 @@
 #{extends 'main.html' /}
 #{set title:'Tasks' /}
+
+
+<input type="text" name="name" id="taskName">
+<input type="button" id="addButton" name="add" value="Add"><br>
+
+<ul id="tasksList">
+	#{list tasks, as:'task'}
+	
+		#{if task.done == false}
+			<li id="${task.id}"><input type="button" class="deleteButton" value="OK !"> ${task.name}</li>
+		#{/if}
+		#{else}
+			<li><strike>${task.name}</strike></li>
+		#{/else}
+		
+	#{/list}
+
+</ul>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$('#addButton').click(function(event) {
+		$.post(
+			'@{Application.add}', 
+			{ name: $('#taskName').val() }, 
+			function(data) {
+				$('ul#tasksList').append('<li>' + data.name + '</li>');
+		});
+	})
+	
+	$('.deleteButton').click(function(event) {
+		value = $(this).parent().attr("id");
+		$.post(
+			'@{Application.delete}', 
+			{ id: value }, 
+			function(data) {
+				$('li#' + value).html('<li><strike>' + data.name + '</strike></li>');
+		});
+	})
+});
+	
+</script>
